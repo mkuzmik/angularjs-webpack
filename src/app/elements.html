@@ -1,0 +1,27 @@
+<table class="table table-stripped">
+  <thead class="thead-default">
+  <tr>
+    <th>Name</th>
+    <th>Amount of Arrows</th>
+    <th>Bow type</th>
+    <th>Power Type</th>
+    <th>#</th>
+  </tr>
+  </thead>
+
+  <tr ng-repeat="elf in $ctrl.elves">
+    <td>{{elf.name}}</td>
+    <td>{{elf.arrows}}</td>
+    <td>{{elf.bowType}}</td>
+    <td>{{elf.powerType}}</td>
+    <td><button type="button" class="btn btn-primary" type="button" ng-click="$ctrl.delete(elf)">Delete</button></td><br>
+  </tr>
+
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td><button type="button" class="btn btn-primary" type="button" ng-click="$ctrl.add(category)">Add</button></td>
+  </tr>
+</table>

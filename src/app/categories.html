@@ -1,0 +1,26 @@
+<table class="table table-stripped">
+  <thead class="thead-default">
+  <tr>
+    <th>Name</th>
+    <th>Amount of Trees</th>
+    <th>#</th>
+    <th>#</th>
+  </tr>
+  </thead>
+
+  <tr ng-repeat="category in $ctrl.categories">
+    <td>{{category.name}}</td>
+    <td>{{category.trees}}</td>
+    <td><button type="button" class="btn btn-primary" type="button" ng-click="$ctrl.show(category)">Show</button></td>
+    <td><button type="button" class="btn btn-primary" type="button" ng-click="$ctrl.delete(category)">Delete</button></td><br>
+  </tr>
+
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td><button type="button" class="btn btn-primary" type="button" ng-click="$ctrl.add(category)">Add</button></td>
+  </tr>
+</table>
+
+<elements ng-if="$ctrl.chosenCategory !== undefined" category="$ctrl.chosenCategory"></elements>
