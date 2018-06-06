@@ -1,6 +1,5 @@
 import angular from 'angular';
 
-import '../style/app.css';
 
 const MODULE_NAME = 'app';
 
@@ -16,9 +15,13 @@ module.component('categories', {
   controller: function ($http) {
     let that = this;
 
-    $http.get('http://localhost:8080/forests').then(response => {
+    that.toAdd = {}
+
+    that.refetch = () => $http.get('http://localhost:8080/forests').then(response => {
       that.categories = response.data;
     });
+
+    that.refetch();
 
     that.show = (category) => {
       if (that.chosenCategory !== category)
@@ -26,6 +29,13 @@ module.component('categories', {
       else
         that.chosenCategory = undefined;
     };
+
+    that.add = () => {
+      $http.post('http://localhost:8080/forests', that.toAdd).then(() => {
+        that.toAdd = {};
+        that.refetch();
+      });
+    }
   }
 });
 
@@ -34,12 +44,28 @@ module.component('elements', {
   bindings: {
     category: '<'
   },
-  controller: function ($scope) {
+  controller: function ($http) {
     let that = this;
 
+    that.bowTypes = ['SMALL', 'BIG'];
+    that.powerTypes = ['SPEED', 'STRENGHT'];
+
     that.$onChanges = function (changes) {
-      that.elves = changes.category.currentValue.elves;
+      that.refetch();
     };
+
+    that.refetch = () => {
+      $http.get('http://localhost:8080/elves').then(response => {
+        that.elves = response.data.filter(elf => elf.forestId === that.category.id);
+        that.toAdd = { forestId: that.category.id };
+      });
+    };
+
+    that.add = () => {
+      $http.post('http://localhost:8080/elves', that.toAdd).then(() => {
+        that.refetch();
+      });
+    }
   }
 });
 

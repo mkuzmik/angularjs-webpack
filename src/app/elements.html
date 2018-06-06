@@ -18,10 +18,11 @@
   </tr>
 
   <tr>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td><button type="button" class="btn btn-primary" type="button" ng-click="$ctrl.add(category)">Add</button></td>
+    <td><input type="text" class="form-control" ng-model="$ctrl.toAdd.name"/></td>
+    <td><input type="text" class="form-control" ng-model="$ctrl.toAdd.arrows"/></td>
+    <td><select ng-options="bow for bow in $ctrl.bowTypes" class="form-control" ng-model="$ctrl.toAdd.bowType"></select></td>
+    <td><select ng-options="power for power in $ctrl.powerTypes" class="form-control" ng-model="$ctrl.toAdd.powerType"></select></td>
+    <td><button type="button" class="btn btn-primary" ng-click="$ctrl.add()">Add</button></td>
+    <td></td><br>
   </tr>
 </table>
