@@ -6,23 +6,52 @@
     <th>Bow type</th>
     <th>Power Type</th>
     <th>#</th>
+    <th>#</th>
   </tr>
   </thead>
 
   <tr ng-repeat="elf in $ctrl.elves">
-    <td>{{elf.name}}</td>
-    <td>{{elf.arrows}}</td>
-    <td>{{elf.bowType}}</td>
-    <td>{{elf.powerType}}</td>
-    <td><button type="button" class="btn btn-primary" type="button" ng-click="$ctrl.delete(elf)">Delete</button></td><br>
+
+    <td ng-if="!elf.editMode">{{elf.name}}</td>
+    <td ng-if="elf.editMode"><input type="text" class="form-control" ng-model="elf.toEdit.name"/></td>
+
+    <td ng-if="!elf.editMode">{{elf.arrows}}</td>
+    <td ng-if="elf.editMode"><input type="number" class="form-control" ng-model="elf.toEdit.arrows"/></td>
+
+    <td ng-if="!elf.editMode">{{elf.bowType}}</td>
+    <td ng-if="elf.editMode"><select ng-options="bow for bow in $ctrl.bowTypes" class="form-control"
+                                     ng-model="elf.toEdit.bowType"></select></td>
+
+    <td ng-if="!elf.editMode">{{elf.powerType}}</td>
+    <td ng-if="elf.editMode"><select ng-options="power for power in $ctrl.powerTypes" class="form-control"
+                                     ng-model="elf.toEdit.powerType"></select></td>
+
+    <td ng-if="!elf.editMode">
+      <button type="button" class="btn btn-primary" type="button" ng-click="$ctrl.editMode(elf)">Edit</button>
+    </td>
+
+    <td ng-if="elf.editMode">
+      <button type="button" class="btn btn-primary" type="button" ng-click="$ctrl.edit(elf)">Save</button>
+    </td>
+    <br>
+
+    <td>
+      <button type="button" class="btn btn-primary" type="button" ng-click="$ctrl.delete(elf)">Delete</button>
+    </td>
+    <br>
   </tr>
 
   <tr>
     <td><input type="text" class="form-control" ng-model="$ctrl.toAdd.name"/></td>
-    <td><input type="text" class="form-control" ng-model="$ctrl.toAdd.arrows"/></td>
-    <td><select ng-options="bow for bow in $ctrl.bowTypes" class="form-control" ng-model="$ctrl.toAdd.bowType"></select></td>
-    <td><select ng-options="power for power in $ctrl.powerTypes" class="form-control" ng-model="$ctrl.toAdd.powerType"></select></td>
-    <td><button type="button" class="btn btn-primary" ng-click="$ctrl.add()">Add</button></td>
-    <td></td><br>
+    <td><input type="number" class="form-control" ng-model="$ctrl.toAdd.arrows"/></td>
+    <td><select ng-options="bow for bow in $ctrl.bowTypes" class="form-control" ng-model="$ctrl.toAdd.bowType"></select>
+    </td>
+    <td><select ng-options="power for power in $ctrl.powerTypes" class="form-control"
+                ng-model="$ctrl.toAdd.powerType"></select></td>
+    <td>
+      <button type="button" class="btn btn-primary" ng-click="$ctrl.add()">Add</button>
+    </td>
+    <td></td>
+    <br>
   </tr>
 </table>

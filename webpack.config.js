@@ -219,8 +219,11 @@ module.exports = function makeWebpackConfig() {
     contentBase: './src/public',
     stats: 'minimal',
     host: 'localhost',
-    port: '8000'
-  };
+    port: '8000',
+    proxy: {
+      "/": "http://localhost:8080"
+      }
+    };
 
   return config;
 }();
