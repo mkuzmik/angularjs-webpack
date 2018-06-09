@@ -1,1 +1,2 @@
-<categories></categories>
+<login ng-if="!$ctrl.authenticated" authenticated="$ctrl.authenticated"></login>
+<categories ng-if="$ctrl.authenticated"></categories>
