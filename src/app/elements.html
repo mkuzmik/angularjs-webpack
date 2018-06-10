@@ -27,21 +27,21 @@
                                      ng-model="elf.toEdit.powerType"></select></td>
 
     <td ng-if="!elf.editMode">
-      <button type="button" class="btn btn-primary" type="button" ng-click="$ctrl.editMode(elf)">Edit</button>
+      <button ng-if="$ctrl.hasEditPermission()" type="button" class="btn btn-primary" type="button" ng-click="$ctrl.editMode(elf)">Edit</button>
     </td>
 
     <td ng-if="elf.editMode">
-      <button type="button" class="btn btn-primary" type="button" ng-click="$ctrl.edit(elf)">Save</button>
+      <button ng-if="$ctrl.hasEditPermission()" type="button" class="btn btn-primary" type="button" ng-click="$ctrl.edit(elf)">Save</button>
     </td>
     <br>
 
     <td>
-      <button type="button" class="btn btn-primary" type="button" ng-click="$ctrl.delete(elf)">Delete</button>
+      <button ng-if="$ctrl.hasEditPermission()" type="button" class="btn btn-primary" type="button" ng-click="$ctrl.delete(elf)">Delete</button>
     </td>
     <br>
   </tr>
 
-  <tr>
+  <tr ng-if="$ctrl.hasEditPermission()">
     <td><input type="text" class="form-control" ng-model="$ctrl.toAdd.name"/></td>
     <td><input type="number" class="form-control" ng-model="$ctrl.toAdd.arrows"/></td>
     <td><select ng-options="bow for bow in $ctrl.bowTypes" class="form-control" ng-model="$ctrl.toAdd.bowType"></select>

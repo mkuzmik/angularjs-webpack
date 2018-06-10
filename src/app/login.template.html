@@ -1,3 +1,6 @@
-Username: <input type="text" ng-model="$ctrl.username"> <br>
-Password: <input type="text" ng-model="$ctrl.password"> <br>
-<button type="button" ng-click="$ctrl.login()">Login</button>
+<div class="centered">
+  Username: <input type="text" ng-model="$ctrl.username"> <br>
+  Password: <input type="password" ng-model="$ctrl.password"> <br>
+  <button class="btn btn-primary" type="button" ng-click="$ctrl.login()" autofocus>Login</button>
+  <span ng-if="$ctrl.error" ng-model="$ctrl.errorMessage"></span>
+</div>

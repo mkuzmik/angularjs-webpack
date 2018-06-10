@@ -3,6 +3,8 @@ import angular from 'angular';
 import "jsonwebtoken";
 import jwt from "jsonwebtoken";
 
+import "../style/main.css"
+
 const MODULE_NAME = 'app';
 
 const module = angular.module(MODULE_NAME, [])
@@ -16,15 +18,27 @@ module.component('home', {
     let that = this;
 
     that.authenticated = authenticationService.isAuthenticated();
+
+    that.logout = () => {
+      authenticationService.logout()
+        .then(() => that.authenticated = false);
+    }
   }
 });
 
 module.component('categories', {
   template: require('./categories.html'),
-  controller: function ($http) {
+  controller: function ($http, authenticationService) {
     let that = this;
 
     that.toAdd = {};
+
+    that.hasEditPermission = (category) => {
+      const userId = authenticationService.getUserId();
+      const role = authenticationService.getRole();
+
+      return (userId == category.userId) || (role === 'ADMIN');
+    };
 
     that.refetch = () => $http.get('/forests').then(response => {
       that.categories = response.data;
@@ -56,6 +70,7 @@ module.component('categories', {
     };
 
     that.edit = (forest) => {
+      forest.toEdit.userId = undefined;
       $http.put('/forests/' + forest.id, forest.toEdit).then(() => {
         forest.editMode = false;
         that.refetch();
@@ -75,7 +90,7 @@ module.component('elements', {
   bindings: {
     category: '<'
   },
-  controller: function ($http) {
+  controller: function ($http, authenticationService) {
     let that = this;
 
     that.bowTypes = ['SMALL', 'BIG'];
@@ -100,10 +115,16 @@ module.component('elements', {
       elf.toEdit.editMode = undefined;
     };
 
+    that.hasEditPermission = () => {
+      const userId = authenticationService.getUserId();
+      const role = authenticationService.getRole();
+
+      return (userId == that.category.userId) || (role === 'ADMIN');
+    };
+
     that.edit = (elf) => {
       $http.put('/elves/' + elf.id, elf.toEdit).then(() => {
         elf.editMode = false;
-        // TODO refetch only one efl, use NamedQuery on backend
         that.refetch();
       });
     };
@@ -127,12 +148,17 @@ class LoginComponent {
     this.authenticationService = authenticationService;
     this.username = '';
     this.password = '';
+    this.error = false;
   }
 
   login() {
-    this.authenticationService.loginWith(this.username, this.password)
-      .then(() => {
+    this.authenticationService.loginWith(this.username, this.password,
+      (e) => {
         this.authenticated = true;
+      },
+      (e) => {
+        this.error = true;
+        this.errorMessage = "Wrror";
       });
   }
 }
@@ -160,10 +186,15 @@ class AuthenticationService {
     this.tokenService = tokenService;
   }
 
-  loginWith(username, password) {
+  loginWith(username, password, successCallback, errorCallback) {
     return this.http.post('/auth/login', { username, password })
       .then(response => {
         this.authenticatedWith(response.headers('Authorization'));
+        successCallback(response);
+      })
+      .catch(response => {
+        if (errorCallback)
+          errorCallback(response);
       });
   }
 

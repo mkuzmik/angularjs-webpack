@@ -1,2 +1,5 @@
+
 <login ng-if="!$ctrl.authenticated" authenticated="$ctrl.authenticated"></login>
+
+<button ng-if="$ctrl.authenticated" class="btn btn-danger" type="button" ng-click="$ctrl.logout()">Logout</button>
 <categories ng-if="$ctrl.authenticated"></categories>

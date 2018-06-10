@@ -19,10 +19,10 @@
 
     <td><button type="button" class="btn btn-primary" ng-click="$ctrl.show(category)">Show</button></td>
 
-    <td ng-if="!category.editMode"><button type="button" class="btn btn-primary" ng-click="$ctrl.editMode(category)">Edit</button></td><br>
+    <td ng-if="$ctrl.hasEditPermission(category) && !category.editMode"><button type="button" class="btn btn-primary" ng-click="$ctrl.editMode(category)">Edit</button></td><br>
     <td ng-if="category.editMode"><button type="button" class="btn btn-primary" ng-click="$ctrl.edit(category)">Save</button></td><br>
 
-    <td><button type="button" class="btn btn-primary" ng-click="$ctrl.delete(category)">Delete</button></td><br>
+    <td><button ng-if="$ctrl.hasEditPermission(category)" type="button" class="btn btn-primary" ng-click="$ctrl.delete(category)">Delete</button></td><br>
   </tr>
 
   <tr>
