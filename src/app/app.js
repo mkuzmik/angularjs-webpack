@@ -17,7 +17,7 @@ module.component('home', {
   controller: function (authenticationService) {
     let that = this;
 
-    that.authenticated = authenticationService.isAuthenticated();
+    authenticationService.isAuthenticated().then((res) => that.authenticated = res);
 
     that.logout = () => {
       authenticationService.logout()
@@ -148,17 +148,17 @@ class LoginComponent {
     this.authenticationService = authenticationService;
     this.username = '';
     this.password = '';
-    this.error = false;
   }
 
   login() {
-    this.authenticationService.loginWith(this.username, this.password,
-      (e) => {
-        this.authenticated = true;
-      },
-      (e) => {
-        this.error = true;
-        this.errorMessage = "Wrror";
+    this.authenticationService.loginWith(this.username, this.password)
+      .then(response => {
+        if (response.status === 200) {
+          this.authenticated = true;
+        } else {
+          this.error = true;
+          this.errorMessage = response.data.message;
+        }
       });
   }
 }
@@ -174,9 +174,9 @@ module.component('login', {
 module.service('tokenService', function () {
   let that = this;
 
-  that.setToken = (token) => that.token = token;
+  that.setToken = (token) => sessionStorage.setItem('token', token);
 
-  that.getToken = () => that.token;
+  that.getToken = () => sessionStorage.getItem('token');
 });
 
 class AuthenticationService {
@@ -184,46 +184,52 @@ class AuthenticationService {
   constructor($http, tokenService) {
     this.http = $http;
     this.tokenService = tokenService;
+
+    const token = sessionStorage.getItem('token');
+    if (token != null)
+      this.authenticatedWith(token);
   }
 
-  loginWith(username, password, successCallback, errorCallback) {
+  loginWith(username, password) {
     return this.http.post('/auth/login', { username, password })
       .then(response => {
         this.authenticatedWith(response.headers('Authorization'));
-        successCallback(response);
+        return response;
       })
       .catch(response => {
-        if (errorCallback)
-          errorCallback(response);
+        return response;
       });
   }
 
   authenticatedWith(token) {
     this.tokenService.setToken(token);
     const decoded = jwt.decode(token);
-    this.userId = decoded.userId;
-    this.role = decoded.role;
+    sessionStorage.setItem('userId', decoded.userId);
+    sessionStorage.setItem('role', decoded.role);
   }
 
   logout() {
     return this.http.delete('/auth/logout')
       .then(response => {
-        this.tokenService.setToken(undefined);
-        this.userId = undefined;
-        this.role = undefined;
+        sessionStorage.clear();
       });
   }
 
   isAuthenticated() {
-    return this.userId !== undefined;
+    return this.http.get("/auth/test")
+      .then(() => true)
+      .catch(() => {
+        sessionStorage.clear();
+        return false;
+      });
   }
 
   getUserId() {
-    return this.userId;
+    return sessionStorage.getItem('userId');
   }
 
   getRole() {
-    return this.role;
+    return sessionStorage.getItem('role');
   }
 }
 

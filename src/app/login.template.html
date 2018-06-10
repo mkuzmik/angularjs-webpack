@@ -1,6 +1,12 @@
 <div class="centered">
-  Username: <input type="text" ng-model="$ctrl.username"> <br>
-  Password: <input type="password" ng-model="$ctrl.password"> <br>
+  <span class="alert alert-danger" ng-if="$ctrl.error" >{{$ctrl.errorMessage}}</span> <br> <br>
+  <div class="form-group">
+    <label for="username">Username:</label>
+    <input type="text" ng-model="$ctrl.username" class="form-control" id="username">
+  </div>
+  <div class="form-group">
+    <label for="password">Password:</label>
+    <input type="password" ng-model="$ctrl.password" class="form-control" id="password">
+  </div>
   <button class="btn btn-primary" type="button" ng-click="$ctrl.login()" autofocus>Login</button>
-  <span ng-if="$ctrl.error" ng-model="$ctrl.errorMessage"></span>
 </div>
