@@ -33,6 +33,15 @@ module.component('categories', {
 
     that.toAdd = {};
 
+    that.errorOccured = (msg) => {
+      that.error = true;
+      that.errorMessage = msg;
+    };
+
+    that.clearError = () => {
+      that.error = false;
+    };
+
     that.hasEditPermission = (category) => {
       const userId = authenticationService.getUserId();
       const role = authenticationService.getRole();
@@ -58,7 +67,7 @@ module.component('categories', {
       $http.post('/forests', that.toAdd).then(() => {
         that.toAdd = {};
         that.refetch();
-      });
+      }).catch(err => that.errorOccured(err.data.message));
     };
 
     that.editMode = (forest) => {
@@ -74,13 +83,13 @@ module.component('categories', {
       $http.put('/forests/' + forest.id, forest.toEdit).then(() => {
         forest.editMode = false;
         that.refetch();
-      });
+      }).catch(err => that.errorOccured(err.data.message));
     };
 
     that.delete = (forest) => {
       $http.delete('/forests/' + forest.id).then(() => {
         that.refetch();
-      });
+      }).catch(err => that.errorOccured(err.data.message));
     };
   }
 });
@@ -100,11 +109,21 @@ module.component('elements', {
       that.refetch();
     };
 
+    that.errorOccured = (msg) => {
+      that.error = true;
+      that.errorMessage = msg;
+    };
+
+    that.clearError = () => {
+      that.error = false;
+    };
+
     that.refetch = () => {
       $http.get('/elves').then(response => {
         that.elves = response.data.filter(elf => elf.forestId === that.category.id);
         that.elves.sort((a, b) => a.id - b.id);
         that.toAdd = { forestId: that.category.id };
+        that.clearError();
       });
     };
 
@@ -126,19 +145,19 @@ module.component('elements', {
       $http.put('/elves/' + elf.id, elf.toEdit).then(() => {
         elf.editMode = false;
         that.refetch();
-      });
+      }).catch(err => that.errorOccured(err.data.message));
     };
 
     that.add = () => {
       $http.post('/elves', that.toAdd).then(() => {
         that.refetch();
-      });
+      }).catch(err => that.errorOccured(err.data.message));
     };
 
     that.delete = (elf) => {
       $http.delete('/elves/' + elf.id).then(() => {
         that.refetch();
-      });
+      }).catch(err => that.errorOccured(err.data.message));
     };
   }
 });
@@ -164,7 +183,7 @@ class LoginComponent {
 }
 
 module.component('login', {
-  template: require('./login.template.html'),
+  template: require('./login..html'),
   bindings: {
     authenticated: '='
   },
@@ -247,5 +266,66 @@ module.factory('authorizationHeaderInterceptor',
     }
   })
 );
+
+class UserService {
+  constructor($http) {
+    this.http = $http;
+  }
+
+  getAll() {
+    return this.http.get('/users');
+  }
+
+  getById(userId) {
+    return this.http.get(`/users/${id}`);
+  }
+
+  update(user) {
+    return this.http.put(`/users/${user.id}`,
+      {
+        username: user.username,
+        password: user.password,
+        role: user.role
+      });
+  }
+}
+
+module.service('userService', UserService);
+
+class UsersComponent {
+  constructor(userService, authenticationService) {
+    this.userService = userService;
+    this.role = authenticationService.getRole();
+    this.userId = authenticationService.getUserId();
+    this.refetch();
+  }
+
+  refetch() {
+    this.userService.getAll().then(resp => {
+      if (this.role === 'USER') {
+        this.users = resp.data.filter(user => user.id == this.userId);
+      } else {
+        this.users = resp.data;
+      }
+
+      this.users.forEach(user => {
+        user.toEdit = angular.copy(user);
+        delete user.toEdit.forests;
+        user.toEdit.password = '';
+        console.log(user.toEdit);
+      });
+    });
+  }
+
+  update(user) {
+    this.userService.update(user.toEdit)
+      .then(() => user.toEdit.edited = true);
+  }
+}
+
+module.component('usersComponent', {
+  template: require('./users.html'),
+  controller: UsersComponent
+});
 
 export default MODULE_NAME;

@@ -1,0 +1,21 @@
+<table class="table table-stripped">
+  <thead class="thead-default">
+  <tr>
+    <th>Username</th>
+    <th>Password</th>
+    <th></th>
+    <th></th>
+  </tr>
+  </thead>
+
+  <tr ng-repeat="usr in $ctrl.users">
+    <td><label class="form-control">{{usr.toEdit.username}}</label></td>
+    <td><input type="password" class="form-control" ng-model="usr.toEdit.password"/></td>
+    <td>
+      <button type="button" class="btn btn-primary" ng-click="$ctrl.update(usr)">Save</button>
+    </td>
+    <td>
+      <label ng-if="usr.toEdit.edited">Password changed</label>
+    </td>
+  </tr>
+</table>
