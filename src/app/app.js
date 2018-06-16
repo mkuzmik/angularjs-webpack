@@ -328,4 +328,21 @@ module.component('usersComponent', {
   controller: UsersComponent
 });
 
+class HighScoresComponent {
+  constructor($http) {
+    this.http = $http;
+    this.refetch();
+  }
+
+  refetch() {
+    this.http.get('/elves?highScores=true')
+      .then((response) => this.elves = response.data);
+  }
+}
+
+module.component('highScores', {
+  template: require('./high-scores.html'),
+  controller: HighScoresComponent
+});
+
 export default MODULE_NAME;

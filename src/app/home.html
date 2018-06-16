@@ -2,7 +2,9 @@
 <login ng-if="!$ctrl.authenticated" authenticated="$ctrl.authenticated"></login>
 
 <button ng-if="$ctrl.authenticated" class="btn btn-info" type="button" ng-click="$ctrl.mode = 'CATEGORIES'">Manage categries</button>
+<button ng-if="$ctrl.authenticated" class="btn btn-info" type="button" ng-click="$ctrl.mode = 'HIGH_SCORES'">High Scores</button>
 <button ng-if="$ctrl.authenticated" class="btn btn-info" type="button" ng-click="$ctrl.mode = 'CHANGE_PASSWORD'">Change password</button>
 <button ng-if="$ctrl.authenticated" class="btn btn-danger" type="button" ng-click="$ctrl.logout()">Logout</button>
 <users-component ng-if="$ctrl.authenticated && $ctrl.mode === 'CHANGE_PASSWORD'"></users-component>
+<high-scores ng-if="$ctrl.authenticated && $ctrl.mode === 'HIGH_SCORES'"></high-scores>
 <categories ng-if="$ctrl.authenticated && $ctrl.mode === 'CATEGORIES'"></categories>

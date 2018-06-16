@@ -1,0 +1,19 @@
+<table class="table table-stripped">
+  <thead class="thead-default">
+  <tr>
+    <th></th>
+    <th>Name</th>
+    <th>Amount of Arrows</th>
+    <th>Bow type</th>
+    <th>Power Type</th>
+  </tr>
+  </thead>
+
+  <tr ng-repeat="elf in $ctrl.elves">
+    <td>{{$index + 1}}</td>
+    <td>{{elf.name}}</td>
+    <td>{{elf.arrows}}</td>
+    <td>{{elf.bowType}}</td>
+    <td>{{elf.powerType}}</td>
+  </tr>
+</table>
